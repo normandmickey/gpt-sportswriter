@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import os, pytz, requests
+import json, os, pytz, requests
 from gpt_researcher.utils.websocket_manager import WebSocketManager
 from .utils import write_md_to_pdf
 from dotenv import load_dotenv
@@ -90,6 +90,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 json_data = json.loads(data[6:])
                 task = json_data.get("task")
                 report_type = json_data.get("report_type")
+                sport_key = task.split(' ', 1)
+                dataScores = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport_key[0]}/scores/?daysFrom=1&apiKey={ODDSAPI_API_KEY}")
+                data_scores = dataScores.json()
+                dataOdds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport_key[0]}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+                data_odds = dataOdds.json()
                 if task and report_type:
                     report = await manager.start_streaming(task, report_type, websocket)
                     path = await write_md_to_pdf(report)
