@@ -2,11 +2,20 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import json
-import os
+import os, pytz, requests
 from gpt_researcher.utils.websocket_manager import WebSocketManager
 from .utils import write_md_to_pdf
+from dotenv import load_dotenv
+from datetime import datetime as dtdt
 
+load_dotenv()
+
+ODDSAPI_API_KEY=os.getenv('ODDS_API_KEY')
+OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
+ept = pytz.timezone('US/Eastern')
+utc = pytz.utc
+# str format
+fmt = '%Y-%m-%d %H:%M:%S %Z%z'
 
 class ResearchRequest(BaseModel):
     task: str
@@ -33,6 +42,41 @@ def startup_event():
 
 @app.get("/")
 async def read_root(request: Request):
+    sports = ['soccer_usa_mls','basketball_nba','americanfootball_nfl','icehockey_nhl','basketball_ncaab','soccer_epl','tennis_atp_aus_open_singles','tennis_wta_aus_open_singles','soccer_africa_cup_of_nations','soccer_spain_la_liga']
+    
+    dataGames = []
+    #dataGames.append("ai_sportsbetting" + " - " + "Write an article announcing GPT Sportswriter an AI Sports Betting Prediction Machine.")
+    for sport in sports:
+        dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+        dataMatch = dataMatch.json()
+        for i in range(len(dataMatch)):
+            #utcTime = dtdt(dataMatch[i]['commence_time'], tzinfo=utc)
+            t = dataMatch[i]['commence_time']
+            utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
+            #print(utcTime)
+            esTime = utcTime.astimezone(ept)
+            #print(esTime)
+            dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
+
+    for sport in sports:
+        dataResults = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?daysFrom=1&apiKey={ODDSAPI_API_KEY}")
+        dataResults = dataResults.json()
+        try:
+            for i in range(len(dataResults)):
+                if dataResults[i]['completed']:
+                    t = dataResults[i]['commence_time']
+                    utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
+                    #print(utcTime)
+                    esTime = utcTime.astimezone(ept)
+                    dataGames.append(dataResults[i]['sport_key'] + " - " + dataResults[i]['home_team'] + " VS " + dataResults[i]['away_team'] + " Recap " + str(esTime)) 
+                else:
+                    print('not completed')
+        except:
+            print("error")
+        
+        
+    print(dataGames)
+
     return templates.TemplateResponse('index.html', {"request": request, "report": None})
 
 
