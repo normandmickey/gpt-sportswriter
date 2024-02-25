@@ -77,7 +77,7 @@ async def read_root(request: Request):
         
     print(dataGames)
 
-    return templates.TemplateResponse('index.html', {"request": request, "report": None})
+    return templates.TemplateResponse('index.html', {"request": request, "report": None, "dataMatch": dataGames})
 
 
 @app.websocket("/ws")
