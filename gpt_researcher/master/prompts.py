@@ -12,7 +12,7 @@ def generate_search_queries_prompt(question, max_iterations=3):
            f'You must respond with a list of strings in the following format: ["query 1", "query 2", "query 3"].'
 
 
-def generate_report_prompt(question, context, report_format="apa", total_words=1000):
+def generate_report_prompt(question, context, report_format="apa", total_words=200):
     """ Generates the report prompt for the given question and research summary.
     Args: question (str): The question to generate the report prompt for
             research_summary (str): The research summary to generate the report prompt for
@@ -22,9 +22,9 @@ def generate_report_prompt(question, context, report_format="apa", total_words=1
     return f'Information: """{context}"""\n\n' \
            f'Using the above information, answer the following' \
            f' query or task: "{question}" in a detailed report --' \
-           " The report should focus on the answer to the query, should be well structured, informative," \
+           " The report should focus on the answer to the query, should be well structured, humourous, witty, informative," \
            f" in depth and comprehensive, with facts and numbers if available and a minimum of {total_words} words.\n" \
-           "You should strive to write the report as long as you can using all relevant and necessary information provided.\n" \
+           "You should strive to write the report as long as you can using all relevant and necessary information provided including player and team statistics and odds.\n" \
            "You must write the report with markdown syntax.\n " \
            f"Use an unbiased and journalistic tone. \n" \
            "You MUST determine your own concrete and valid opinion based on the given information. Do NOT deter to general and meaningless conclusions.\n" \
@@ -34,6 +34,7 @@ def generate_report_prompt(question, context, report_format="apa", total_words=1
             relevant results that answer the query accurately. Place these citations at the end \
             of the sentence or paragraph that reference them.\n"\
             f"Please do your best, this is very important to my career. " \
+            f"You must make a prediction don't say that it's anyone's game.  Base your prediction on the odds, weather conditions and statistics. " \
             f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')}"
 
 
