@@ -21,7 +21,7 @@ def generate_report_prompt(question, context, report_format="apa", total_words=2
 
     return f'Information: """{context}"""\n\n' \
            f'Using the above information, answer the following' \
-           f' query or task: "{question}" in a detailed report --' \
+           f' query or task: Who will win teh game between "{question}" in a detailed report --' \
            " The report should focus on the answer to the query, should be well structured, humourous, witty, informative," \
            f" in depth and comprehensive, with facts and numbers if available and a minimum of {total_words} words.\n" \
            "You should strive to write the report as long as you can using all relevant and necessary information provided including player and team statistics and odds.\n" \
@@ -37,25 +37,31 @@ def generate_report_prompt(question, context, report_format="apa", total_words=2
             f"You must make a prediction don't say that it's anyone's game.  Base your prediction on the odds, weather conditions and statistics. " \
             f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')}"
 
-
-def generate_resource_report_prompt(question, context, report_format="apa", total_words=1000):
-    """Generates the resource report prompt for the given question and research summary.
-
-    Args:
-        question (str): The question to generate the resource report prompt for.
-        context (str): The research summary to generate the resource report prompt for.
-
-    Returns:
-        str: The resource report prompt for the given question and research summary.
+def generate_resource_report_prompt(question, context, report_format="apa", total_words=200):
+    """ Generates the report prompt for the given question and research summary.
+    Args: question (str): The question to generate the report prompt for
+            research_summary (str): The research summary to generate the report prompt for
+    Returns: str: The report prompt for the given question and research summary
     """
-    return f'"""{context}"""\n\nBased on the above information, generate a bibliography recommendation report for the following' \
-           f' question or topic: "{question}". The report should provide a detailed analysis of each recommended resource,' \
-           ' explaining how each source can contribute to finding answers to the research question.\n' \
-           'Focus on the relevance, reliability, and significance of each source.\n' \
-           'Ensure that the report is well-structured, informative, in-depth, and follows Markdown syntax.\n' \
-           'Include relevant facts, figures, and numbers whenever available.\n' \
-           'The report should have a minimum length of 700 words.\n' \
-            'You MUST include all relevant source urls.'
+
+    return f'Information: """{context}"""\n\n' \
+           f'Using the above information, answer the following' \
+           f' query or task: Write a recap of the game between "{question}" in a detailed report --' \
+           " The report should focus on the answer to the query, should be well structured, humourous, witty, informative," \
+           f" in depth and comprehensive, with facts and numbers if available and a minimum of {total_words} words.\n" \
+           "You should strive to write the report as long as you can using all relevant and necessary information provided including player and team statistics and odds.\n" \
+           "You must write the report with markdown syntax.\n " \
+           f"Use an unbiased and journalistic tone. \n" \
+           "You MUST determine your own concrete and valid opinion based on the given information. Do NOT deter to general and meaningless conclusions.\n" \
+           f"You MUST write all used source urls at the end of the report as references, and make sure to not add duplicated sources, but only one reference for each.\n" \
+           f"You MUST write the report in {report_format} format.\n " \
+            f"Cite search results using inline notations. Only cite the most \
+            relevant results that answer the query accurately. Place these citations at the end \
+            of the sentence or paragraph that reference them.\n"\
+            f"Please do your best, this is very important to my career. " \
+            f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')}"
+
+
 
 def generate_custom_report_prompt(query_prompt, context, report_format="apa", total_words=1000):
     return f'"{context}"\n\n{query_prompt}'
