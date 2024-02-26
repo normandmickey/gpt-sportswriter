@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import json, os, pytz, requests
+import json, os, pytz, requests, logging
 from gpt_researcher.utils.websocket_manager import WebSocketManager
 from .utils import write_md_to_pdf
 from dotenv import load_dotenv
@@ -43,7 +43,7 @@ def startup_event():
 @app.get("/")
 async def read_root(request: Request):
     #sports = ['soccer_usa_mls','basketball_nba','americanfootball_nfl','icehockey_nhl','basketball_ncaab','soccer_epl','tennis_atp_aus_open_singles','tennis_wta_aus_open_singles','soccer_africa_cup_of_nations','soccer_spain_la_liga']
-    sports = ['americanfootball_ncaaf', 'aussierules_afl', 'baseball_mlb_preseason', 'baseball_ncaa', 'basketball_euroleague', 'basketball_nba', 'basketball_ncaab', 'boxing_boxing', 'cricket_psl', 'icehockey_nhl', 'icehockey_sweden_allsvenskan', 'icehockey_sweden_hockey_league', 'mma_mixed_martial_arts', 'rugbyleague_nrl', 'soccer_australia_aleague', 'soccer_austria_bundesliga', 'soccer_belgium_first_div', 'soccer_chile_campeonato', 'soccer_china_superleague', 'soccer_conmebol_copa_libertadores', 'soccer_denmark_superliga', 'soccer_efl_champ', 'soccer_england_league1', 'soccer_england_league2', 'soccer_epl', 'soccer_fa_cup', 'soccer_france_ligue_one', 'soccer_france_ligue_two', 'soccer_germany_bundesliga', 'soccer_germany_bundesliga2', 'soccer_germany_liga3', 'soccer_italy_serie_a', 'soccer_italy_serie_b', 'soccer_japan_j_league', 'soccer_korea_kleague1', 'soccer_league_of_ireland', 'soccer_mexico_ligamx', 'soccer_netherlands_eredivisie', 'soccer_poland_ekstraklasa', 'soccer_portugal_primeira_liga', 'soccer_spain_la_liga', 'soccer_spain_segunda_division', 'soccer_spl', 'soccer_sweden_allsvenskan', 'soccer_switzerland_superleague', 'soccer_turkey_super_league', 'soccer_uefa_champs_league', 'soccer_uefa_euro_qualification', 'soccer_uefa_europa_conference_league', 'soccer_uefa_europa_league', 'soccer_usa_mls']
+    sports = ['americanfootball_ncaaf', 'baseball_mlb_preseason', 'baseball_ncaa', 'basketball_nba', 'basketball_ncaab', 'boxing_boxing', 'icehockey_nhl', 'mma_mixed_martial_arts', 'soccer_australia_aleague', 'soccer_epl', 'soccer_fa_cup', 'soccer_spain_la_liga', 'soccer_usa_mls']
     #sports = []
     #sportsReq = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     #sports_json = sportsReq.json()
@@ -81,9 +81,9 @@ async def read_root(request: Request):
                     esTime = utcTime.astimezone(ept)
                     dataGames.append(dataResults[i]['sport_key'] + " - " + dataResults[i]['home_team'] + " VS " + dataResults[i]['away_team'] + " Recap " + str(esTime)) 
                 else:
-                    print('not completed')
+                    logging.warning("error")      
         except:
-            print("error")
+            logging.warning("error")
         
         
     print(dataGames)
