@@ -46,20 +46,20 @@ class WebSocketManager:
             del self.sender_tasks[websocket]
             del self.message_queues[websocket]
 
-    async def start_streaming(self, task, report_type, websocket):
+    async def start_streaming(self, task, report_type, websocket, data_odds, data_scores):
         """Start streaming the output."""
-        report = await run_agent(task, report_type, websocket)
+        report = await run_agent(task, report_type, websocket, data_odds, data_scores) 
         return report
 
 
-async def run_agent(task, report_type, websocket):
+async def run_agent(task, report_type, websocket, data_odds, data_scores):
     """Run the agent."""
     # measure time
     start_time = datetime.datetime.now()
     # add customized JSON config file path here
     config_path = None
     # run agent
-    researcher = GPTResearcher(query=task, report_type=report_type, source_urls=None, config_path=config_path, websocket=websocket)
+    researcher = GPTResearcher(query=task, odds=data_odds, scores=data_scores, report_type=report_type, source_urls=None, config_path=config_path, websocket=websocket)
     report = await researcher.run()
     # measure time
     end_time = datetime.datetime.now()

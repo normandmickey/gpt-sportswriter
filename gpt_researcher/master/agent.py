@@ -9,7 +9,7 @@ class GPTResearcher:
     """
     GPT Researcher
     """
-    def __init__(self, query, report_type="research_report", source_urls=None, config_path=None, websocket=None):
+    def __init__(self, odds, scores, query, report_type="research_report", source_urls=None, config_path=None, websocket=None):
         """
         Initialize the GPT Researcher class.
         Args:
@@ -18,6 +18,8 @@ class GPTResearcher:
             config_path:
             websocket:
         """
+        self.odds = odds
+        self.scores = scores
         self.query = query
         self.agent = None
         self.role = None
@@ -88,6 +90,8 @@ class GPTResearcher:
             content = await self.get_similar_content_by_query(sub_query, scraped_sites)
             await stream_output("logs", f"📃 {content}", self.websocket)
             context.append(content)
+            #context.append(self.scores)
+            context.append(self.odds)
 
         return context
 

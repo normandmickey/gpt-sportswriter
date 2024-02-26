@@ -56,7 +56,7 @@ async def read_root(request: Request):
     for sport in sports:
         dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
         dataMatch = dataMatch.json()
-        print(dataMatch)
+        #print(dataMatch)
         for i in range(len(dataMatch)):
             #utcTime = dtdt(dataMatch[i]['commence_time'], tzinfo=utc)
             try:
@@ -107,7 +107,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 dataOdds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport_key[0]}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
                 data_odds = dataOdds.json()
                 if task and report_type:
-                    report = await manager.start_streaming(task, report_type, websocket)
+                    report = await manager.start_streaming(task, report_type, websocket, data_odds, data_scores)
                     path = await write_md_to_pdf(report)
                     await websocket.send_json({"type": "path", "output": path})
                 else:
