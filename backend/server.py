@@ -42,7 +42,7 @@ def startup_event():
 
 @app.get("/")
 async def read_root(request: Request):
-    sports = ['soccer_usa_mls','basketball_nba','americanfootball_nfl','icehockey_nhl','basketball_ncaab','soccer_epl','tennis_atp_aus_open_singles','tennis_wta_aus_open_singles','soccer_africa_cup_of_nations','soccer_spain_la_liga']
+    sports = ['baseball_mlb','soccer_usa_mls','basketball_nba','americanfootball_nfl','icehockey_nhl','basketball_ncaab','soccer_epl','tennis_atp_aus_open_singles','tennis_wta_aus_open_singles','soccer_africa_cup_of_nations','soccer_spain_la_liga']
     #sports = ['americanfootball_ncaaf', 'baseball_mlb_preseason', 'baseball_ncaa', 'basketball_nba', 'basketball_ncaab', 'boxing_boxing', 'icehockey_nhl', 'mma_mixed_martial_arts', 'soccer_australia_aleague', 'soccer_epl', 'soccer_fa_cup', 'soccer_spain_la_liga', 'soccer_usa_mls']
     #sports = []
     #sportsReq = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
