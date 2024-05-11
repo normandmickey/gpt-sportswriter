@@ -2,16 +2,21 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import json, os, pytz, requests, logging
+import json, os, pytz, requests, logging, praw
 from gpt_researcher.utils.websocket_manager import WebSocketManager
 from .utils import write_md_to_pdf
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
 
+
 load_dotenv()
 
 ODDSAPI_API_KEY=os.getenv('ODDS_API_KEY')
 OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
+reddit_client_id=os.getenv('REDDIT_CLIENT_ID')
+reddit_client_secret=os.getenv('REDDIT_CLIENT_SECRET')
+reddit_username=os.getenv('reddit_username')
+reddit_password=os.getenv('reddit_password')
 ept = pytz.timezone('US/Eastern')
 utc = pytz.utc
 # str format
@@ -31,6 +36,16 @@ app.mount("/static", StaticFiles(directory="./frontend/static"), name="static")
 templates = Jinja2Templates(directory="./frontend")
 
 manager = WebSocketManager()
+
+reddit = praw.Reddit(
+    client_id=reddit_client_id,
+    client_secret=reddit_client_secret,
+    user_agent="GPTSportsWriter by u/GPTSportsWriter",
+    username=reddit_username,
+    password=reddit_password
+)
+
+subreddit = reddit.subreddit("gptsportswriter")
 
 
 # Dynamic directory for outputs once first research is run
@@ -110,6 +125,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     report = await manager.start_streaming(task, report_type, websocket, data_odds, data_scores)
                     path = await write_md_to_pdf(report)
                     await websocket.send_json({"type": "path", "output": path})
+                    taskParts = task.split(' - ')
+                    title = taskParts[1]
+                    redditSubmission = subreddit.submit(title, selftext=report)
                 else:
                     print("Error: not enough parameters provided.")
 
