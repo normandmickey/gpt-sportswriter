@@ -171,11 +171,11 @@ async def websocket_endpoint(websocket: WebSocket):
                     await websocket.send_json({"type": "path", "output": path})
                     imagePrompt = createImagePrompt(task)
                     imageURL = createImage(imagePrompt)
+                    taskParts = task.split(' - ')
                     title = taskParts[1]
                     image = InlineImage(path="img.jpg", caption=title)
                     media = {"image1": image}
                     selfText = "{image1}" + report 
-                    taskParts = task.split(' - ')
                     redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
                 else:
                     print("Error: not enough parameters provided.")
