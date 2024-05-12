@@ -87,7 +87,7 @@ def createImage(prompt):
 
     image1_url = response.data[0].url
     data = requests.get(image1_url).content
-    f = open('img.jpg', 'wb')
+    f = open('/app/img.jpg', 'wb')
     f.write(data)
     f.close
 
@@ -173,7 +173,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     imageURL = createImage(imagePrompt)
                     taskParts = task.split(' - ')
                     title = taskParts[1]
-                    image = InlineImage(path="img.jpg", caption=title)
+                    image = InlineImage(path="/app/img.jpg", caption=title)
                     media = {"image1": image}
                     selfText = "{image1}" + report 
                     redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
