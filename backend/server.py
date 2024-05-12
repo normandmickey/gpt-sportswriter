@@ -15,8 +15,8 @@ ODDSAPI_API_KEY=os.getenv('ODDS_API_KEY')
 OPENAI_API_KEY=os.getenv("OPENAI_API_KEY")
 reddit_client_id=os.getenv('REDDIT_CLIENT_ID')
 reddit_client_secret=os.getenv('REDDIT_CLIENT_SECRET')
-reddit_username=os.getenv('reddit_username')
-reddit_password=os.getenv('reddit_password')
+reddit_username=os.getenv('REDDIT_USERNAME')
+reddit_password=os.getenv('REDDIT_PASSWORD')
 ept = pytz.timezone('US/Eastern')
 utc = pytz.utc
 # str format
@@ -127,7 +127,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     await websocket.send_json({"type": "path", "output": path})
                     taskParts = task.split(' - ')
                     title = taskParts[1]
-                    redditSubmission = subreddit.submit(title, selftext=report)
+                    selfText = report
+                    redditSubmission = subreddit.submit(title, selftext=selfText)
                 else:
                     print("Error: not enough parameters provided.")
 
