@@ -3,10 +3,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import json, os, pytz, requests, logging, praw
+from praw.models import InlineImage
 from gpt_researcher.utils.websocket_manager import WebSocketManager
 from .utils import write_md_to_pdf
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
+from openai import OpenAI
 
 
 load_dotenv()
@@ -37,6 +39,9 @@ templates = Jinja2Templates(directory="./frontend")
 
 manager = WebSocketManager()
 
+
+client = OpenAI()
+
 reddit = praw.Reddit(
     client_id=reddit_client_id,
     client_secret=reddit_client_secret,
@@ -46,6 +51,45 @@ reddit = praw.Reddit(
 )
 
 subreddit = reddit.subreddit("gptsportswriter")
+
+def createImagePrompt(text):
+    response = client.chat.completions.create(
+    model="gpt-4-0125-preview",
+    messages=[
+        {
+        "role": "user",
+        "content": "create a prompt to create an image in the style of digital art.  Find the mascot for the teams mentioned in the text and create an image of a game between them, include references to the cities or colleges and teams or mascots mentioned in the text, be creative, fun and whimsical. If there are no teams mentioned then use the subject of text as your inspiration. " + text
+        #"content": "create a prompt to create a realistic image based on the following text in the stle of digital art.  Find the mascot for the teams mentioned include references to the mascots, teams, cities, weather, venue etc. " + text
+        #"content": "create a prompt to create a memeable image based on the following text in the stle of digital art be creative and whimsical." + text
+        }
+    ],
+    temperature=0.5,
+    max_tokens=500,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+
+    print(response.choices[0].message.content)
+    return response.choices[0].message.content
+
+def createImage(prompt):
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    client = OpenAI(api_key=OPENAI_API_KEY)
+
+    response = client.images.generate(
+        model="dall-e-3",
+        prompt="digital art based on the following input" + prompt,
+        size="1024x1024",
+        quality="standard",
+        n=1,
+    )
+
+    image1_url = response.data[0].url
+    data = requests.get(image1_url).content
+    f = open('img.jpg', 'wb')
+    f.write(data)
+    f.close
 
 
 # Dynamic directory for outputs once first research is run
@@ -125,9 +169,13 @@ async def websocket_endpoint(websocket: WebSocket):
                     report = await manager.start_streaming(task, report_type, websocket, data_odds, data_scores)
                     path = await write_md_to_pdf(report)
                     await websocket.send_json({"type": "path", "output": path})
+                    imagePrompt = createImagePrompt(task)
+                    imageURL = createImage(imagePrompt)
+                    image = InlineImage(path="img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + report 
                     taskParts = task.split(' - ')
                     title = taskParts[1]
-                    selfText = report
                     redditSubmission = subreddit.submit(title, selftext=selfText)
                 else:
                     print("Error: not enough parameters provided.")
