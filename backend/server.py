@@ -176,7 +176,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     selfText = "{image1}" + report 
                     taskParts = task.split(' - ')
                     title = taskParts[1]
-                    redditSubmission = subreddit.submit(title, selftext=selfText)
+                    redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
                 else:
                     print("Error: not enough parameters provided.")
 
