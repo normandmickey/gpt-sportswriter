@@ -47,7 +47,7 @@ def generate_resource_report_prompt(question, context, report_format="MLA", tota
     return f'Information: """{context}"""\n\n' \
            f'Using the above information, answer the following' \
            f' query or task: Write a recap of the game between "{question}" in a detailed report --' \
-           " The report should focus on the answer to the query, should be well structured, informative," \
+           " The report should focus on the answer to the query, should be well structured, informative, humorous and sarcastic" \
            f" in depth and comprehensive, with facts and numbers if available and a minimum of {total_words} words.\n" \
            "You should strive to write the report as long as you can using all relevant and necessary information provided including player and team statistics and odds.\n" \
            "You must write the report with markdown syntax.\n " \
