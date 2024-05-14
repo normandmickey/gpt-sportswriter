@@ -54,7 +54,7 @@ subreddit = reddit.subreddit("gptsportswriter")
 
 def createImagePrompt(text):
     response = client.chat.completions.create(
-    model="gpt-4-0125-preview",
+    model="gpt-4o",
     messages=[
         {
         "role": "user",
