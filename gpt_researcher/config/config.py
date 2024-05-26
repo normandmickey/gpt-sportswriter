@@ -9,7 +9,7 @@ class Config:
     def __init__(self, config_file: str = None):
         """Initialize the config class."""
         self.config_file = config_file if config_file else os.getenv('CONFIG_FILE')
-        self.retriever = os.getenv('SEARCH_RETRIEVER', "tavily")
+        self.retriever = os.getenv('SEARCH_RETRIEVER', "google")
         self.llm_provider = os.getenv('LLM_PROVIDER', "ChatOpenAI")
         self.fast_llm_model = os.getenv('FAST_LLM_MODEL', "gpt-3.5-turbo-16k")
         #self.smart_llm_model = os.getenv('SMART_LLM_MODEL', "gpt-4-1106-preview")
