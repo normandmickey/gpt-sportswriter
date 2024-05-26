@@ -169,14 +169,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     report = await manager.start_streaming(task, report_type, websocket, data_odds, data_scores)
                     path = await write_md_to_pdf(report)
                     await websocket.send_json({"type": "path", "output": path})
-                    #imagePrompt = createImagePrompt(task)
-                    #imageURL = createImage(imagePrompt)
-                    #taskParts = task.split(' - ')
-                    #title = taskParts[1]
-                    #image = InlineImage(path="/app/img.jpg", caption=title)
-                    #media = {"image1": image}
-                    #selfText = "{image1}" + report 
-                    #redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
+                    imagePrompt = createImagePrompt(task)
+                    imageURL = createImage(imagePrompt)
+                    taskParts = task.split(' - ')
+                    title = taskParts[1]
+                    image = InlineImage(path="/app/img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + report 
+                    redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
                 else:
                     print("Error: not enough parameters provided.")
 
