@@ -35,7 +35,7 @@ def generate_report_prompt(question, context, report_format="MLA", total_words=5
             of the sentence or paragraph that reference them.\n"\
             f"Please do your best and be funny, this is very important to my career. " \
             f"You must make a prediction don't say that it's anyone's game.  Base your prediction on the odds, weather conditions and statistics. " \
-            f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')} do not use any statistics that are over 1 week old."
+            f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')} only reference statistics found in the search results."
 
 def generate_resource_report_prompt(question, context, report_format="MLA", total_words=200):
     """ Generates the report prompt for the given question and research summary.
