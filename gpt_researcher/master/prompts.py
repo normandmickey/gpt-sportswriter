@@ -21,9 +21,9 @@ def generate_report_prompt(question, context, report_format="MLA", total_words=5
 
     return f'Information: """{context}"""\n\n' \
            f'Using the above information, answer the following' \
-           f' query or task: Who will win teh game between "{question}" in a detailed report --' \
+           f' query or task: Who will win the game between "{question}" in a detailed report --' \
            " The report should focus on the answer to the query, should be well structured, humorous, informative," \
-           f" in depth and comprehensive, with facts and numbers if available and a minimum of {total_words} words.\n" \
+           f" in depth and comprehensive, with only current facts and numbers if available and a minimum of {total_words} words.\n" \
            "You should strive to write the report as long as you can using all relevant and necessary information provided including player and team statistics and odds.\n" \
            "You must write the report with markdown syntax.\n " \
            f"Use an unbiased and journalistic tone but also ironic and witty. \n" \
@@ -35,7 +35,7 @@ def generate_report_prompt(question, context, report_format="MLA", total_words=5
             of the sentence or paragraph that reference them.\n"\
             f"Please do your best and be funny, this is very important to my career. " \
             f"You must make a prediction don't say that it's anyone's game.  Base your prediction on the odds, weather conditions and statistics. " \
-            f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')}"
+            f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')} do not use any statistics that are over 1 week old."
 
 def generate_resource_report_prompt(question, context, report_format="MLA", total_words=200):
     """ Generates the report prompt for the given question and research summary.
